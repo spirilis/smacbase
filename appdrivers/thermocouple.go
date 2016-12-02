@@ -2,7 +2,7 @@ package appdrivers
 
 import (
 	"fmt"
-	"spirilis/smacbase"
+	"github.com/spirilis/smacbase"
 )
 
 // ThermocoupleStdout is an SMac handler that receives temperature data, and relays it directly to stdout.  Duh.

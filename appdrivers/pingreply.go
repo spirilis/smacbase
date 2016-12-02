@@ -1,8 +1,8 @@
 package appdrivers
 
 import (
+	"github.com/spirilis/smacbase"
 	"log"
-	"spirilis/smacbase"
 )
 
 /* Ping reply implements a listener for Ping echo-requests (0x2003) and responds with an outbound packet

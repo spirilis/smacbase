@@ -2,7 +2,7 @@ package appdrivers
 
 import (
 	"fmt"
-	"spirilis/smacbase"
+	"github.com/spirilis/smacbase"
 )
 
 /* loggable.go defines the LogText interface, whose only method Log() (printf-style arguments) logs text to

@@ -1,8 +1,8 @@
 package appdrivers
 
 import (
+	"github.com/spirilis/smacbase"
 	"log"
-	"spirilis/smacbase"
 )
 
 /* deviceid is responsible for receiving Device ID registrations (ProgID=0x2000) and

@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/spirilis/smacbase"
+	"github.com/spirilis/smacbase/appdrivers"
 	"gopkg.in/alecthomas/kingpin.v2"
 	"os"
-	"spirilis/smacbase"
-	"spirilis/smacbase/appdrivers"
 )
 
 var (

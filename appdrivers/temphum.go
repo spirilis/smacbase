@@ -2,9 +2,9 @@ package appdrivers
 
 import (
 	"fmt"
+	"github.com/spirilis/smacbase"
 	"log"
 	"math"
-	"spirilis/smacbase"
 )
 
 /* Temphum is based around a TI HDC1080 temperature + humidity sensor, albeit values doctored a bit.
@@ -64,6 +64,7 @@ func (t *TemperatureHumidity) Receive(l *smacbase.LinkMgr, srcAddr uint32, progI
 	fTemp = float64(temp) / 8.0
 	fHum = float64(hum) / 255.0
 	// TD: =243.04*(LN(RH/100)+((17.625*T)/(243.04+T)))/(17.625-LN(RH/100)-((17.625*T)/(243.04+T)))
+	// ^ From http://andrew.rsmas.miami.edu/bmcnoldy/Humidity.html
 	fDewpt = 243.04 * (math.Log(fHum) + ((17.625 * fTemp) / (243.04 + fTemp))) / (17.625 - math.Log(fHum) - ((17.625 * fTemp) / (243.04 + fTemp)))
 
 	t.LastSeenTemp[devid] = temp
@@ -77,7 +78,7 @@ func (t *TemperatureHumidity) Receive(l *smacbase.LinkMgr, srcAddr uint32, progI
 	return false
 }
 
-// GetByDevice implements QueryDevice, returns a []int16 where position #0 is temperature in Celsius * 8, #1 is relative humidity in percentage (0-100)
+// GetByDevice implements QueryDevice, returns a []int16 where position #0 is temperature in Celsius * 8, #1 is relative humidity in integer percentage (0-100)
 func (t *TemperatureHumidity) GetByDevice(devID uint16) (interface{}, error) {
 	var collection []int16
 
