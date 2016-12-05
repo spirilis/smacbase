@@ -37,7 +37,7 @@ func NewTemperatureHumidity(l *smacbase.LinkMgr, g LogText, devIDHandler QueryDe
 }
 
 // Receive implements smacbase.FrameReceiver
-func (t *TemperatureHumidity) Receive(l *smacbase.LinkMgr, srcAddr uint32, progID uint16, payload []byte) bool {
+func (t *TemperatureHumidity) Receive(l *smacbase.LinkMgr, rssi int8, srcAddr uint32, progID uint16, payload []byte) bool {
 	if progID != 0x2002 {
 		log.Printf("TemperatureHumidity.Receive: received frame for wrong progID=%04X, expected 0x2002", progID)
 		return true // not sure why this packet was received here but keep processing
@@ -70,11 +70,12 @@ func (t *TemperatureHumidity) Receive(l *smacbase.LinkMgr, srcAddr uint32, progI
 	t.LastSeenTemp[devid] = temp
 	t.LastSeenHum[devid] = hum
 	devDesc, _ := t.DeviceIdHandler.GetByDevice(devid)
-	t.Logger.Printf("TempHum RX: [%s] - %.1f degF, %.1f%% RH, Dewpt %.1f degF%s\n", devDesc,
+	t.Logger.Printf("TempHum RX: [%s] - %.1f degF, %.1f%% RH, Dewpt %.1f degF%s [RSSI=%d]\n", devDesc,
 		(fTemp*9.0/5.0)+32.0,
 		fHum*100.0,
 		(fDewpt*9.0/5.0)+32.0,
-		heaterOn)
+		heaterOn,
+		rssi)
 	return false
 }
 

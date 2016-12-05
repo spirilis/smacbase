@@ -125,8 +125,8 @@ func npiPhyReader(phy io.ReadWriteCloser, outFrame chan<- *NpiRadioFrame, ctrlRe
 				}
 			}
 			if framePos > 0 { // StartChar found; search for payloadLen
-				if payloadLen == 0 && (frame[0] == 0xAE && framePos == 7) {
-					payloadLen = 9 + int(ui)
+				if payloadLen == 0 && (frame[0] == 0xAE && framePos == 8) {
+					payloadLen = 10 + int(ui)
 					//log.Printf("npiPhyReader: SC=%2x, dataLen=%d, payloadLen=%d", uint8(frame[0]), ui, payloadLen)
 				}
 				if payloadLen == 0 && (frame[0] == 0xBA && framePos == 3) {
@@ -153,16 +153,19 @@ func npiPhyReader(phy io.ReadWriteCloser, outFrame chan<- *NpiRadioFrame, ctrlRe
 						var progID uint16
 						progID = uint16(frame[5])
 						progID |= uint16(frame[6]) << 8
+						var rssi int8
+						rssi = int8(frame[7])
 						var dataLen uint8
 						var payload, payloadCp []byte
-						dataLen = uint8(frame[7])
-						payload = frame[8 : 8+dataLen]
+						dataLen = uint8(frame[8])
+						payload = frame[9 : 9+dataLen]
 						payloadCp = make([]byte, dataLen)
 						copy(payloadCp, payload) // Make a copy to avoid overloading []frame space
 
 						n.Address = addr
 						n.Program = progID
 						n.Data = payloadCp
+						n.Rssi = rssi
 						outFrame <- n // send newly parsed packet on its way
 					}
 					if frame[0] == 0xBA { // Control cmd reply

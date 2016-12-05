@@ -28,12 +28,12 @@ type FrameStdout struct {
 }
 
 // Receive implements smacbase.FrameReceiver
-func (f *FrameStdout) Receive(l *smacbase.LinkMgr, srcAddr uint32, progID uint16, payload []byte) bool {
+func (f *FrameStdout) Receive(l *smacbase.LinkMgr, rssi int8, srcAddr uint32, progID uint16, payload []byte) bool {
 	outStr := fmt.Sprintf("RX: %08X Prog = %04X, payload = [", srcAddr, progID)
 	for _, b := range payload {
 		outStr += fmt.Sprintf("%02X ", b)
 	}
-	outStr += fmt.Sprintf("]\n")
+	outStr += fmt.Sprintf("], RSSI=%d\n", rssi)
 	f.Logger.Printf(outStr)
 	return true
 }

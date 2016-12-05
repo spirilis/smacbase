@@ -61,9 +61,9 @@ type LinkMgr struct {
 // FrameReceiver is an interface used to handle incoming RX frames.
 type FrameReceiver interface {
 	// Receive is called automatically by the LinkMgr with a pointer to the LinkMgr (for sending frames or controlling the link),
-	// the SrcAddr, ProgramID, data payload, and the implementation should return a bool for whether the LinkMgr should stop processing
-	// the frame here or continue passing it to other handlers.
-	Receive(*LinkMgr, uint32, uint16, []byte) bool
+	// the RSSI, the SrcAddr, ProgramID, data payload, and the implementation should return a bool for whether the LinkMgr
+	// should stop processing the frame here or continue passing it to other handlers.
+	Receive(*LinkMgr, int8, uint32, uint16, []byte) bool
 }
 
 // NewLinkMgr gets the ball rolling and starts the PHY in a goroutine (RunNPI), along with its RX manager
@@ -264,7 +264,7 @@ func (l *LinkMgr) ExecRxHandler() error {
 				handler = l.RxRegistryProgram[otaFrame.Program]
 				l.registryMutex.Unlock()
 				if handler != nil {
-					ret := handler.Receive(l, otaFrame.Address, otaFrame.Program, otaFrame.Data)
+					ret := handler.Receive(l, otaFrame.Rssi, otaFrame.Address, otaFrame.Program, otaFrame.Data)
 					if !ret {
 						continue // Do not attempt processing the frame any more
 					}
@@ -273,7 +273,7 @@ func (l *LinkMgr) ExecRxHandler() error {
 				handler = l.RxRegistryAddress[otaFrame.Address]
 				l.registryMutex.Unlock()
 				if handler != nil {
-					ret := handler.Receive(l, otaFrame.Address, otaFrame.Program, otaFrame.Data)
+					ret := handler.Receive(l, otaFrame.Rssi, otaFrame.Address, otaFrame.Program, otaFrame.Data)
 					if !ret {
 						continue // Do not attempt processing the frame any more
 					}
@@ -282,7 +282,7 @@ func (l *LinkMgr) ExecRxHandler() error {
 				firehoseList := l.RxFirehose
 				l.registryMutex.Unlock()
 				for _, handler = range firehoseList {
-					ret := handler.Receive(l, otaFrame.Address, otaFrame.Program, otaFrame.Data)
+					ret := handler.Receive(l, otaFrame.Rssi, otaFrame.Address, otaFrame.Program, otaFrame.Data)
 					if !ret {
 						break // Do not attempt processing the frame any more
 					}

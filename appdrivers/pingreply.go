@@ -15,7 +15,7 @@ type PingHandler struct {
 }
 
 // Receive implements FrameReceiver
-func (p PingHandler) Receive(l *smacbase.LinkMgr, srcAddr uint32, progID uint16, payload []byte) bool {
+func (p PingHandler) Receive(l *smacbase.LinkMgr, rssi int8, srcAddr uint32, progID uint16, payload []byte) bool {
 	if progID != 0x2003 {
 		log.Printf("PingHandler.Receive: Handling invalid packet with progID=%04X", progID)
 		return true
@@ -26,7 +26,7 @@ func (p PingHandler) Receive(l *smacbase.LinkMgr, srcAddr uint32, progID uint16,
 
 	var pingVal uint32
 	pingVal = uint32(payload[0]) | (uint32(payload[1]) << 8) | (uint32(payload[2]) << 16) | (uint32(payload[3]) << 24)
-	p.Logger.Printf("PingHandler.Receive: Responding to echo-request from src=%08X, payload = %04X\n", srcAddr, pingVal)
+	p.Logger.Printf("PingHandler.Receive: Responding to echo-request from src=%08X, payload = %04X, RSSI=%d\n", srcAddr, pingVal, rssi)
 	l.Send(srcAddr, 0x2004, payload)
 	err := l.RunTx()
 	if err != nil {

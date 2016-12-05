@@ -23,7 +23,7 @@ func NewDeviceIdRegistration(l *smacbase.LinkMgr) *DeviceIdRegistration {
 }
 
 // Receive implements smacbase.FrameReceiver
-func (d *DeviceIdRegistration) Receive(l *smacbase.LinkMgr, srcAddr uint32, progID uint16, payload []byte) bool {
+func (d *DeviceIdRegistration) Receive(l *smacbase.LinkMgr, rssi int8, srcAddr uint32, progID uint16, payload []byte) bool {
 	if progID != 0x2000 {
 		log.Printf("DeviceIdRegistration.Receive: received an invalid frame with progID=%04X, expected 0x2000", progID)
 		return true // Error, not intended for us?

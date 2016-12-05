@@ -11,6 +11,7 @@ import (
  *   0xAE         - Start Character
  *   XX XX XX XX  - 4-byte Src/DstAddr, Little-Endian
  *   YY YY        - 2-byte Program ID, Little-Endian
+ *   RR           - RSSI for received packet, 8-bit Signed Integer, 0 for Transmit Packets
  *   ZZ           - 1-byte Payload Length
  *   [payload data...]
  *   CC           - 1-byte XOR checksum
@@ -136,6 +137,7 @@ func (n *NpiControl) Pend() {
 type NpiRadioFrame struct {
 	Address uint32
 	Program uint16
+	Rssi    int8
 	Data    []byte
 }
 
@@ -144,6 +146,7 @@ func NewRadioFrame(addr uint32, prog uint16, data []byte) *NpiRadioFrame {
 	n := new(NpiRadioFrame)
 	n.Address = addr
 	n.Program = prog
+	n.Rssi = 0
 	n.Data = data
 	return n
 }
@@ -159,6 +162,7 @@ func (n *NpiRadioFrame) Serialize() []byte {
 	buf.WriteByte(uint8((n.Address >> 24) & 0xFF))
 	buf.WriteByte(uint8(n.Program & 0xFF))
 	buf.WriteByte(uint8(n.Program >> 8))
+	buf.WriteByte(0) // RSSI field is empty for transmit packets
 	buf.WriteByte(uint8(len(n.Data)))
 	l, err := buf.Write(n.Data)
 	if err != nil {

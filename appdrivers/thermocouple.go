@@ -22,7 +22,7 @@ func NewThermocoupleStdout(l *smacbase.LinkMgr) *ThermocoupleStdout {
 }
 
 // Receive implements smacbase.FrameReceiver - returns true if LinkMgr should continue parsing after this
-func (ts *ThermocoupleStdout) Receive(l *smacbase.LinkMgr, srcAddr uint32, progID uint16, payload []byte) bool {
+func (ts *ThermocoupleStdout) Receive(l *smacbase.LinkMgr, rssi int8, srcAddr uint32, progID uint16, payload []byte) bool {
 	// Extract thermocouple data
 	if progID != 0x2001 {
 		return true // apparently this packet wasn't intended for us, so, continue processing
@@ -40,6 +40,6 @@ func (ts *ThermocoupleStdout) Receive(l *smacbase.LinkMgr, srcAddr uint32, progI
 
 	ts.SeenNodes[devid] = tc
 
-	fmt.Printf("Device ID %04X: TC = %d Celsius, Ambient = %d Celsius (srcAddr = %08X)\n", devid, tc, amb, srcAddr)
+	fmt.Printf("Device ID %04X: TC = %d Celsius, Ambient = %d Celsius (srcAddr = %08X, RSSI=%d)\n", devid, tc, amb, srcAddr, rssi)
 	return true // continue processing as there may be other intelligent apps using it
 }
