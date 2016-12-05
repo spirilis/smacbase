@@ -226,7 +226,7 @@ func npiPhyWriter(phy io.ReadWriteCloser, squelch <-chan bool,
 				}
 				return
 			}
-			//log.Printf("npiPhyWriter: Committed an OTA frame of writeLen=%d", w)
+			//log.Printf("npiPhyWriter: Committed an OTA frame of writeLen=%d, dstAddr=%08x, program ID=%04x", w, otaFrame.Address, otaFrame.Program)
 		case ctlFrame := <-ctrlXmit:
 			buf = ctlFrame.Serialize()
 			_, err := phy.Write(buf)
@@ -238,7 +238,7 @@ func npiPhyWriter(phy io.ReadWriteCloser, squelch <-chan bool,
 				}
 				return
 			}
-			//log.Printf("npiPhyWriter: Committed a Ctrl frame of writeLen=%d", w)
+			//log.Printf("npiPhyWriter: Committed a Ctrl frame of writeLen=%d, Command=%02x", w, ctlFrame.Command)
 		}
 	}
 }
