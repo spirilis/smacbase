@@ -69,7 +69,19 @@ func (t *TemperatureHumidity) Receive(l *smacbase.LinkMgr, rssi int8, srcAddr ui
 
 	t.LastSeenTemp[devid] = temp
 	t.LastSeenHum[devid] = hum
-	devDesc, _ := t.DeviceIdHandler.GetByDevice(devid)
+	devDesc, err := t.DeviceIdHandler.GetByDevice(devid)
+	if err != nil {
+		if _, ok := err.(NotFound); ok {
+			// Send an inquiry to this device asking for its device description; we won't have it for this sample but maybe next one.
+			payload := make([]byte, 2)
+			payload[0] = uint8(devid)
+			payload[1] = uint8(devid >> 8)
+			err = l.Send(srcAddr, 0x2000, payload) // don't actually care about the error here, this is an optional operation
+			if err == nil {
+				l.RunTx()
+			}
+		}
+	}
 	t.Logger.Printf("TempHum RX: [%s] - %.1f degF, %.1f%% RH, Dewpt %.1f degF%s [RSSI=%d]\n", devDesc,
 		(fTemp*9.0/5.0)+32.0,
 		fHum*100.0,
