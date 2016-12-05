@@ -45,7 +45,7 @@ func (d *DeviceIdRegistration) Receive(l *smacbase.LinkMgr, rssi int8, srcAddr u
 // GetByDevice is used by other appdrivers and implements QueryDevice
 func (d *DeviceIdRegistration) GetByDevice(devID uint16) (interface{}, error) {
 	if d.Registrations[devID] == "" {
-		return nil, NotFound("DeviceID Not Found")
+		return "", NotFound("DeviceID Not Found")
 	}
 	return d.Registrations[devID], nil
 }
