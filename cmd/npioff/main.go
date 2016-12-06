@@ -36,4 +36,5 @@ func main() {
 		fmt.Printf("Error switching RX off: %v\n", err)
 		os.Exit(1)
 	}
+	fmt.Println("done.")
 }
