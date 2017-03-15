@@ -3,6 +3,7 @@ package smacbase
 import (
 	"github.com/jacobsa/go-serial/serial"
 	"io"
+	//"fmt"
 	"log"
 )
 
